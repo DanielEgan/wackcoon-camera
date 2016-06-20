@@ -1,29 +1,29 @@
 import * as path from 'path';
 import RaspiCam = require('raspicam');
 
+let FREQUENCY = 10000;
+
 let imagesRoot = path.join(__dirname,'..', 'images');
 
 let camera = new RaspiCam({
     mode: 'photo',
-    timelapse: 1000,
+    timelapse: FREQUENCY,
     timeout: 0,
     rotation: 180,
-    preview: '100,100,200,200',
+    encoding: 'png',
+    exposure: 'auto',
+    saturation: 50,
+    brightness: 50,
+    quality: 90,
+    thumb: 'none',
     output: path.join(imagesRoot, '%d.png'),
-    encoding: 'png'
+    awb: 'sun',
+    width: 1296,
+    height: 730,
+    // preview:"0,0,200,200",
+    nopreview: true
 });
 
 //start taking timelapses
 console.log('starting camera...');
 camera.start();
-
-//catch crashes and unexpected exits
-process.on('exit', () => stop('exit'));
-process.on('SIGINT', () => stop('SIGINT'));
-process.on('uncaughtException', (err) => stop(err));
-
-function stop(reason) {
-    console.log('stopping camera...');
-    console.log(reason);
-    camera.stop();
-}
