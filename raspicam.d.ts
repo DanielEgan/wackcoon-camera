@@ -9,13 +9,22 @@ declare module 'raspicam' {
     namespace RaspiCam {
 
         interface RaspiCamOptions {
-            mode: string,
-            timelapse: number,
-            timeout: number,
-            rotation: number,
-            preview: string,
-            output: string,
-            encoding: string
+            mode?: string,
+            timelapse?: number,
+            timeout?: number,
+            rotation?: number,
+            preview?: string,
+            output?: string,
+            encoding?: string,
+            exposure?: string,
+            saturation?: number,
+            brightness?: number,
+            quality?: number,
+            thumb?: string,
+            nopreview?: boolean,
+            awb?: string,
+            width?: number,
+            height?: number
         }
     }
 
