@@ -3,6 +3,8 @@ import RaspiCam = require('raspicam');
 
 let imagesRoot = path.join(__dirname,'..', 'images');
 
+//determine OS version.  Pi or Edison
+
 let camera = new RaspiCam({
     mode: 'photo',
     timelapse: 1000,
