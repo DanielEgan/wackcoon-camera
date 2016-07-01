@@ -30,7 +30,7 @@ fs.readFile('/proc/cpuinfo', (err, data) => {
                 brightness: 50,
                 quality: 90,
                 thumb: 'none',
-                output: path.join(imagesRoot, '%d.png'),
+                output: '%d.png',
                 awb: 'sun',
                 width: 1296,
                 height: 730,
