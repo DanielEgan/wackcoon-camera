@@ -1,31 +1,63 @@
 import * as path from 'path';
-import RaspiCam = require('raspicam');
+import * as fs from 'fs';
 
-let imagesRoot = path.join(__dirname,'..', 'images');
+let imagesRoot = path.join(__dirname, '..', 'images');
+let FREQUENCY = 10;
+let boardType;
 
-//determine OS version.  Pi or Edison
+fs.readFile('/proc/cpuinfo', (err, data) => {
+    var cpuinfo = data.toString();
+    console.log(cpuinfo);
+    if (/ARMv7/.test(cpuinfo))
+        boardType = 'pi';
+    else if (/GenuineIntel/.test(cpuinfo))
+        boardType = 'edison';
+    else
+        boardType = 'unknown';
 
-let camera = new RaspiCam({
-    mode: 'photo',
-    timelapse: 1000,
-    timeout: 0,
-    rotation: 180,
-    preview: '100,100,200,200',
-    output: path.join(imagesRoot, '%d.png'),
-    encoding: 'png'
+    switch (boardType) {
+        case 'pi':
+            let RaspiCam = require('raspicam');
+            console.log('found a pi');
+            let piCamera = new RaspiCam({
+                mode: 'photo',
+                timelapse: FREQUENCY * 1000,
+                timeout: 0,
+                rotation: 180,
+                encoding: 'png',
+                exposure: 'auto',
+                saturation: 50,
+                brightness: 50,
+                quality: 90,
+                thumb: 'none',
+                output: '%d.png',
+                awb: 'sun',
+                width: 1296,
+                height: 730,
+                // preview:"0,0,200,200",
+                nopreview: true
+            });
+
+            //start taking timelapses
+            console.log('starting camera...');
+            piCamera.start();
+            break;
+        case 'edison':
+            let ffmpeg = require('./ffmpeg');
+            console.log('found an edison');
+
+            new ffmpeg('/dev/video0').then(function (stream) {
+                // Callback mode
+                stream.fnExtractFrameToPNG('.', {
+                    frame_rate: 1,
+                    size: '1280x720',
+                    file_name: '%t.png'
+                });
+            });
+            console.log('starting camera...');
+            break;
+        default:
+            console.log('unknown board type');
+
+    }
 });
-
-//start taking timelapses
-console.log('starting camera...');
-camera.start();
-
-//catch crashes and unexpected exits
-process.on('exit', () => stop('exit'));
-process.on('SIGINT', () => stop('SIGINT'));
-process.on('uncaughtException', (err) => stop(err));
-
-function stop(reason) {
-    console.log('stopping camera...');
-    console.log(reason);
-    camera.stop();
-}
