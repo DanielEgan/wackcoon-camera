@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/DanielEgan/wackcoon-camera#readme",
   "dependencies": {
-    "raspicam": "^0.2.13",
-    "ffmpeg": "git://github.com/danielegan/node-ffmpeg.git"
+    "raspicam": "^0.2.13"
   }
 }
