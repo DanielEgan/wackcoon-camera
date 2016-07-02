@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
+
 let imagesRoot = path.join(__dirname, '..', 'images');
 let FREQUENCY = 10;
 let boardType;
