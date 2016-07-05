@@ -44,12 +44,12 @@ fs.readFile('/proc/cpuinfo', (err, data) => {
             piCamera.start();
             break;
         case 'edison':
-            let ffmpeg = require('./ffmpeg');
+            let ffmpeg = require('ffmpeg');
             console.log('found an edison');
 
             new ffmpeg('/dev/video0').then(function (stream) {
                 // Callback mode
-                stream.fnExtractFrameToPNG('.', {
+                stream.fnExtractFrameToJPG('.', {
                     frame_rate: 1,
                     size: '1280x720',
                     file_name: '%t.png'
