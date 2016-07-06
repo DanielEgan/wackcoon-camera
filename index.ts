@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
-
+let exec = require('child_process').exec;
 
 let imagesRoot = path.join(__dirname, '..', 'images');
 let FREQUENCY = 10;
@@ -44,16 +44,11 @@ fs.readFile('/proc/cpuinfo', (err, data) => {
             piCamera.start();
             break;
         case 'edison':
-            let ffmpeg = require('./ffmpeg');
             console.log('found an edison');
 
-            new ffmpeg('/dev/video0').then(function (stream) {
-                // Callback mode
-                stream.fnExtractFrameToPNG('.', {
-                    frame_rate: 1,
-                    size: '1280x720',
-                    file_name: '%t.png'
-                });
+            exec("ffmpeg -s 1280x720 -i /dev/video0 -y -vf fps=10/60 %03d.png", function (error, stdout, stderr) {
+                if(error) console.log('error: ' + error);
+                console.log(stdout);
             });
             console.log('starting camera...');
             break;
